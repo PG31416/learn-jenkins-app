@@ -1,7 +1,5 @@
 pipeline {
-    agent{
-        image 'node:'
-    }
+    agnet any
     stages {
         stage('Build') {
             agent{
