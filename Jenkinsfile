@@ -35,43 +35,30 @@
                     ls -la
 
                 '''
-
             }
-
         }
-
         stage('Test'){
             agent{
-
                 docker{
-
                     image 'node:18-alpine'
-
                     reuseNode true
-
                 }
-
             }
-
             when{
-
                 expression { return fileExists('build/index.html')}
-
             }
-
             steps{
-
                 sh'''
-
                     echo "Test Stage"
                     npm test
-
                 '''
-
             }
-
         }
-
+    }
+    post{
+        always{
+            junit 'test-results/junit.xml'
+        }
     }
 
 }
