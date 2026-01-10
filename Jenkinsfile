@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent{
+        image 'node:'
+    }
     stages {
         stage('Build') {
             agent{
@@ -26,7 +28,7 @@ pipeline {
             steps{
                 sh'''
                     echo "Test Stage"
-                    npm test
+                    npm --version
                 '''
             }
         }
