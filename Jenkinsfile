@@ -19,5 +19,15 @@ pipeline {
                 '''
             }
         }
+        stage('Test'){
+            when{
+                expression { return fileExists('build/index.html')}
+            }
+            steps{
+                sh'''
+                    echo "Test Stage"
+                '''
+            }
+        }
     }
 }
