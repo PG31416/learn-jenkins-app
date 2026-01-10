@@ -64,8 +64,7 @@
                 sh'''
 
                     echo "Test Stage"
-
-                    npm --version
+                    npm test
 
                 '''
 
