@@ -6,74 +6,74 @@
         NETLIFY_SITE_ID = '7582f611-bc53-485c-95bd-176c2cae9e0d'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
-    // stages {
-    //     // stage('Build') {
-    //     //     agent{
-    //     //         docker{
-    //     //             image 'node:18-alpine'
-    //     //             reuseNode true
-    //     //         }
-    //     //     }
-    //     //     steps {
-    //     //         sh'''
-    //     //             ls -la
-    //     //             node --version
-    //     //             npm --version
-    //     //             npm ci
-    //     //             npm run build
-    //     //             ls -la
-    //     //         '''
-    //     //     }
-    //     // }
-    //     stage('Tests'){
-    //         parallel{
-    //             stage('Unit Test'){
-    //                 agent{
-    //                     docker{
-    //                         image 'node:18-alpine'
-    //                         reuseNode true
-    //                     }
-    //                 }
-    //                 when{
-    //                     expression { return fileExists('build/index.html')}
-    //                 }
-    //                 steps{
-    //                     sh'''
-    //                         echo "Test Stage"
-    //                         npm test
-    //                     '''
-    //                     }
-    //                     post{
-    //                         always{
-    //                         junit 'jest-results/junit.xml'
-    //                         }
-    //                     }
-    //                 }
+    stages {
+        // stage('Build') {
+        //     agent{
+        //         docker{
+        //             image 'node:18-alpine'
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps {
+        //         sh'''
+        //             ls -la
+        //             node --version
+        //             npm --version
+        //             npm ci
+        //             npm run build
+        //             ls -la
+        //         '''
+        //     }
+        // }
+        stage('Tests'){
+            parallel{
+                stage('Unit Test'){
+                    agent{
+                        docker{
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    when{
+                        expression { return fileExists('build/index.html')}
+                    }
+                    steps{
+                        sh'''
+                            echo "Test Stage"
+                            npm test
+                        '''
+                        }
+                        post{
+                            always{
+                            junit 'jest-results/junit.xml'
+                            }
+                        }
+                    }
                 
-    //             stage('E2E'){
-    //                 agent{
-    //                 docker{
-    //                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-    //                     reuseNode true
-    //                 }
-    //             }
+                stage('E2E'){
+                    agent{
+                    docker{
+                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                        reuseNode true
+                    }
+                }
         
-    //                 steps{
-    //                     sh'''
-    //                         npm install serve
-    //                         node_modules/.bin/serve -s build &
-    //                         sleep 10
-    //                         npx playwright test
-    //                     '''
-    //                 }
-    //                 post{
-    //                     always{
-    //                         publishHTML([allowMissing:false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
+                    steps{
+                        sh'''
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test
+                        '''
+                    }
+                    post{
+                        always{
+                            publishHTML([allowMissing:false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
+                }
+            }
+        }
         stage('Deploy') {
             agent{
                 docker{
