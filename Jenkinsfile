@@ -7,7 +7,7 @@
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
     stages {
-        // stage('Build') {
+        stage('Build') {
         //     agent{
         //         docker{
         //             image 'node:18-alpine'
@@ -24,7 +24,7 @@
         //             ls -la
         //         '''
         //     }
-        // }
+        }
         stage('Tests'){
             parallel{
                 stage('Unit Test'){
