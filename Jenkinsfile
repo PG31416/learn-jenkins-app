@@ -5,6 +5,7 @@
     environment{
         NETLIFY_SITE_ID = '7582f611-bc53-485c-95bd-176c2cae9e0d'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        CI_ENVIRONMENT_URL = 
     }
     stages {
         stage('Build') {
@@ -69,7 +70,7 @@
                     }
                     post{
                         always{
-                            publishHTML([allowMissing:false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([allowMissing:false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
@@ -91,6 +92,27 @@
                     node_modules/.bin/netlify deploy --prod --dir=build --no-build
 
                 '''
+            }
+        }
+        stage('Prod E2E'){
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            environment{
+                CI_ENVIRONMENT_URL = 'https://resilient-bublanina-4d40d4.netlify.app'
+            }
+            steps{
+                sh'''
+                    npx playwright test
+                '''
+            }
+            post{
+                always{
+                    publishHTML([allowMissing:false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
             }
         }
         
