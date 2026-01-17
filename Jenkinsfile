@@ -5,7 +5,6 @@
     environment{
         NETLIFY_SITE_ID = '7582f611-bc53-485c-95bd-176c2cae9e0d'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = 
     }
     stages {
         stage('Build') {
